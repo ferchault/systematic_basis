@@ -1,0 +1,3 @@
+[submodule "deps/Quax"]
+	path = deps/Quax
+	url = git@github.com:CCQC/Quax.git
