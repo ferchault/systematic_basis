@@ -60,7 +60,7 @@ def optimize_fixed_basis(
     opt_basis = bpacker.construct_from_tensor(min_bparams)
 
     alphas = [_.alphas.detach().numpy() for _ in opt_basis[: len(primitive_exponents)]]
-    return np.array(alphas).flatten(), fcn(bparams, bpacker).detach().numpy()
+    return np.array(alphas).flatten(), fcn(min_bparams, bpacker).detach().numpy()
 
 
 import sys
@@ -70,8 +70,9 @@ nprimitives = int(sys.argv[2])
 
 guess = 0.1 * 4.1 ** np.arange(0, nprimitives)
 # guess = [1.33249899, 0.20152957]
+net_charge = Z - 1
 alphas, energy = optimize_fixed_basis(
-    (Z,), ((0, 0, 0),), [(0, 0, 0)] * nprimitives, guess, 0, 1
+    (Z,), ((0, 0, 0),), [(0, 0, 0)] * nprimitives, guess, net_charge, 1
 )
 print(f"run-{Z}-{nprimitives}")
 print("result-alpha " + " ".join([str(_) for _ in alphas]))
