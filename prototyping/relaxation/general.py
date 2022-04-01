@@ -49,10 +49,20 @@ def first_stage(x0, Ns):
 
 
 if __name__ == "__main__":
-    args = [int(_) for _ in sys.argv[1:]]
-    x0 = [400, 0.2] * len(args)
-    res = sco.minimize(first_stage, x0, args=(args,))
-    print("Basis set")
-    print(args_to_bas(res.x, args))
-    print("Error to CBS [Ha]")
-    print(res.fun - -29.1341759449)
+    CBS = -29.1341759449
+    try:
+        args = [int(_) for _ in sys.argv[1:]]
+        x0 = [400, 0.2] * len(args)
+        res = sco.minimize(first_stage, x0, args=(args,))
+        print("Basis set")
+        print(args_to_bas(res.x, args))
+        print("Error to CBS [Ha]")
+        print(res.fun - CBS)
+    except:
+        basis = sys.argv[1]
+        print("Contracted", do_mol(basis) - CBS)
+        print(
+            "Uncontracted",
+            do_mol({"Be": pyscf.gto.uncontract(pyscf.gto.basis.load(basis, "Be"))})
+            - CBS,
+        )
