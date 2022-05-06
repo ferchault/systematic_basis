@@ -25,10 +25,11 @@ def get_floating_calculator(
     nuclear_coordinates: Iterable[Iterable[float]],
     primitive_centers: Iterable[Iterable[float]],
     primitive_exponents: Iterable[float],
+    primitive_angular: Iterable[int],
     net_charge: float,
     spin: int,
 ) -> pyscf.scf.RHF:
-    """Builds a RHF calculator with off-center / floating basis functions.
+    """Builds a RHF calculator with uncontracted off-center / floating basis functions.
 
     Parameters
     ----------
@@ -40,6 +41,8 @@ def get_floating_calculator(
         Coordinates in Angstrom.
     primitive_exponents : Iterable[float]
         exponents in a.u.
+    primitive_anguler : Iterable[int]
+        angular momenta
     net_charge : float
         Net charge in electrons.
     spin : int
@@ -54,10 +57,10 @@ def get_floating_calculator(
     # define ghost sites for each primitive
     basis = {}
     atomspec = []
-    for center, coefficient in zip(primitive_centers, primitive_exponents):
+    for center, coefficient, angular in zip(primitive_centers, primitive_exponents, primitive_angular):
         ghostelement = f"X{len(atomspec)}"
         atomspec.append(f"{ghostelement} {center[0]} {center[1]} {center[2]}")
-        basis[ghostelement] = [[0, [coefficient, 1.0]]]
+        basis[ghostelement] = [[angular, [coefficient, 1.0]]]
 
     # build molecule
     mol = pyscf.gto.Mole()
